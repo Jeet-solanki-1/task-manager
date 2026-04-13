@@ -15,4 +15,7 @@ Filter by status: GET /api/tasks?status=pending.
 
 Learn: Basic JPA entities, @RestController, @Repository, pagination.
 
-Frontend: Simple list with add/edit/delete buttons.
+Frontend: Simple list with add/edit/delete buttons. --> i dont need it.
+
+
+# At the end of this project i will remake my generic-service that i made in inventory hub.

@@ -1,0 +1,164 @@
+Here’s a clear and complete guide to the most common Spring Boot REST API annotations for GET, POST, PUT, DELETE, etc., with runnable examples.
+
+1. Controller-Level Annotations
+
+
+
+Annotation
+Purpose
+
+
+
+
+@RestController
+Marks a class as a REST API controller (combines @Controller + @ResponseBody).
+
+
+@Controller
+Marks a class as a Spring MVC controller (used for web pages or APIs).
+
+
+@RequestMapping
+Maps HTTP requests to handler methods or classes (can specify path + method).
+
+
+
+
+2. HTTP Method Annotations
+
+
+
+Annotation
+HTTP Method
+Usage
+
+
+
+
+@GetMapping
+GET
+Retrieve data.
+
+
+@PostMapping
+POST
+Create new data.
+
+
+@PutMapping
+PUT
+Update existing data (replace).
+
+
+@PatchMapping
+PATCH
+Partially update data.
+
+
+@DeleteMapping
+DELETE
+Remove data.
+
+
+
+
+3. Parameter Annotations
+
+
+
+Annotation
+Purpose
+
+
+
+
+@PathVariable
+Extracts values from the URL path.
+
+
+@RequestParam
+Extracts query parameters from the URL.
+
+
+@RequestBody
+Binds JSON/XML request body to a Java object.
+
+
+@RequestHeader
+Extracts HTTP header values.
+
+
+
+
+4. Example Spring Boot REST API
+Javapackage com.example.demo.controller;
+
+import org.springframework.web.bind.annotation.*;
+import java.util.*;
+
+@RestController
+@RequestMapping("/api/users") // Base path for all endpoints
+public class UserController {
+
+    private Map<Integer, String> users = new HashMap<>();
+
+    // GET - Retrieve all users
+    @GetMapping
+    public Map<Integer, String> getAllUsers() {
+        return users;
+    }
+
+    // GET - Retrieve a user by ID
+    @GetMapping("/{id}")
+    public String getUserById(@PathVariable int id) {
+        return users.getOrDefault(id, "User not found");
+    }
+
+    // POST - Create a new user
+    @PostMapping
+    public String createUser(@RequestParam int id, @RequestParam String name) {
+        users.put(id, name);
+        return "User created: " + name;
+    }
+
+    // PUT - Update an existing user
+    @PutMapping("/{id}")
+    public String updateUser(@PathVariable int id, @RequestParam String name) {
+        if (users.containsKey(id)) {
+            users.put(id, name);
+            return "User updated: " + name;
+        }
+        return "User not found";
+    }
+
+    // DELETE - Remove a user
+    @DeleteMapping("/{id}")
+    public String deleteUser(@PathVariable int id) {
+        if (users.remove(id) != null) {
+            return "User deleted";
+        }
+        return "User not found";
+    }
+}
+
+
+5. How It Works
+
+@RestController → Makes the class a REST API controller.
+@RequestMapping("/api/users") → All endpoints start with /api/users.
+@GetMapping, @PostMapping, etc. → Map specific HTTP methods.
+@PathVariable → Reads {id} from the URL.
+@RequestParam → Reads query parameters like ?id=1&name=John.
+
+
+✅ Tip:
+If you want to handle JSON request bodies instead of query params, replace:
+Javapublic String createUser(@RequestParam int id, @RequestParam String name)
+
+with:
+Javapublic String createUser(@RequestBody User user)
+
+and create a User class.
+
+If you want, I can give you a full Spring Boot project with GET, POST, PUT, DELETE APIs and JSON request/response handling so you can run it directly.
+Do you want me to prepare that?
