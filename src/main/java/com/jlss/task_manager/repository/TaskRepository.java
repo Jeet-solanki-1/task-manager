@@ -9,9 +9,10 @@ import org.springframework.data.repository.query.Param;
 
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import com.jlss.task_manager.enums.Status;
 @Repository
 public interface TaskRepository extends JpaRepository<Task,Long>{
 
     @Query("SELECT t FROM Task t WHERE t.status = :status")
-	List<Task> findByStatus(@Param("status") String status);
+	List<Task> findByStatus(@Param("status") Status status);
 }
