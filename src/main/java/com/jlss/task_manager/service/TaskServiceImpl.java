@@ -9,6 +9,10 @@ import com.jlss.task_manager.model.*;
 import java.util.stream.Collectors;
 import java.util.List;
 import com.jlss.task_manager.enums.Status;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 @Service
 public class TaskServiceImpl implements TaskService   {
  	private final TaskRepository repository;
@@ -24,14 +28,31 @@ public class TaskServiceImpl implements TaskService   {
  	@Override
  	@Transactional
  	public TaskResponse createTask(TaskRequest request){
+ 		if (!isDueDateValid(request.getDueDate())){
+ 			throw new RuntimeException("due date cant be in past!!");
+ 		}
  		Task task = new Task();
-        task.setTitle(request.getTitle());
-        task.setDescription(request.getDescription());
-        task.setDueDate(request.getDueDate());
+		task.setTitle(request.getTitle());
+		task.setDescription(request.getDescription());
+		task.setDueDate(request.getDueDate());
 
+		
         Task saved = repository.save(task);
 
  		return convertToResponse(saved);
+ 	}
+ 	public boolean isDueDateValid(String dueDateStr){
+ 		try{
+ 			DateTimeFormatter df =  DateTimeFormatter.ofPattern("dd-MM-yyyy");
+ 			LocalDate dueDate = LocalDate.parse(dueDateStr,df);
+ 			LocalDate today = LocalDate.now();
+ 			if (today.isAfter(dueDate)){
+ 				return false;
+ 			}
+ 			return true;
+ 		}catch(DateTimeParseException e){
+ 			return false;
+ 		}
  	}
  	@Override
 	public List<TaskResponse> getAllTasks(){
