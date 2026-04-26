@@ -153,3 +153,48 @@ curl -X GET http://localhost:8080/api/tasks
 ## ✅ **Now Your APIs Will Work With Your Regex!**
 
 Run these commands in **Git Bash** and your Task Manager API will accept all requests without validation errors! 🚀
+
+## Pagination api spec just copy and test!
+```
+# Create task 1
+curl -X POST http://localhost:8080/api/tasks -H "Content-Type: application/json" -d '{"title":"Spring Boot Learning","description":"Learn pagination","dueDate":"31-12-2026"}'
+
+# Create task 2
+curl -X POST http://localhost:8080/api/tasks -H "Content-Type: application/json" -d '{"title":"Spring Data JPA","description":"Master repositories","dueDate":"31-12-2026"}'
+
+# Create task 3
+curl -X POST http://localhost:8080/api/tasks -H "Content-Type: application/json" -d '{"title":"Task Manager Project","description":"Complete all features","dueDate":"31-12-2026"}'
+
+# Mark task 1 as completed
+curl -X PATCH http://localhost:8080/api/tasks/1/COMPLETED
+
+# Case 1: No filters
+curl "http://localhost:8080/api/tasks?page=0&size=10&sortBy=id&direction=asc"
+
+# Case 2: Filter by PENDING status
+curl "http://localhost:8080/api/tasks?page=0&size=10&sortBy=id&direction=asc&status=PENDING"
+
+# Case 3: Filter by COMPLETED status
+curl "http://localhost:8080/api/tasks?page=0&size=10&sortBy=id&direction=asc&status=COMPLETED"
+
+# Case 4: Search by title
+curl "http://localhost:8080/api/tasks?page=0&size=10&sortBy=id&direction=asc&search=Spring"
+
+# Case 5: Status + Search together
+curl "http://localhost:8080/api/tasks?page=0&size=10&sortBy=id&direction=asc&status=PENDING&search=Spring"
+
+# Case 6: Pagination - second page
+curl "http://localhost:8080/api/tasks?page=1&size=2&sortBy=id&direction=asc"
+
+# Case 7: Sort by title ascending
+curl "http://localhost:8080/api/tasks?page=0&size=10&sortBy=title&direction=asc"
+
+# Case 8: Sort by title descending
+curl "http://localhost:8080/api/tasks?page=0&size=10&sortBy=title&direction=desc"
+
+# Case 9: All combined
+curl "http://localhost:8080/api/tasks?page=0&size=5&sortBy=title&direction=asc&status=PENDING&search=Spring"
+
+# Case 10: No results
+curl "http://localhost:8080/api/tasks?page=0&size=10&search=NonExistentKeyword"
+```

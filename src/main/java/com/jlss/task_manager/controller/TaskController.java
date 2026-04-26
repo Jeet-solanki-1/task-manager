@@ -7,6 +7,9 @@ import com.jlss.task_manager.model.*;
 import com.jlss.task_manager.service.TaskService;
 import com.jlss.task_manager.enums.Status;
 import java.util.List;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+
 // why need valid here? @Valid?
 
 @RestController
@@ -21,17 +24,23 @@ public class TaskController{
 		return service.getTaskById(id);
 	}
 	@PostMapping()
-	public TaskResponse createTask(@RequestBody TaskRequest request){
+	public TaskResponse createTask(@Valid @RequestBody TaskRequest request){
+		
 		return service.createTask(request);
 	}
-	@GetMapping()
-	public  List<TaskResponse> getAllTasks(){
-		return service.getAllTasks();
+	@GetMapping
+	public ResponseEntity<Page<TaskResponse>> getTasks(
+	    @RequestParam(defaultValue = "0") int page,
+	    @RequestParam(defaultValue = "10") int size,
+	    @RequestParam(defaultValue = "id") String sortBy,
+	    @RequestParam(defaultValue = "asc") String direction,
+	    @RequestParam(required = false) Status status,
+	    @RequestParam(required = false) String search) {
+
+	Page<TaskResponse> taskPage = service.getTasks(status, search, page, size, sortBy, direction);
+	return ResponseEntity.ok(taskPage);
 	}
-	@GetMapping("/status")
-	public List<TaskResponse> getTasksByStatus(@RequestParam Status status){
-		return service.getTasksByStatus(status);
-	}
+	
 	@PutMapping("/{id}")
 	public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @RequestBody TaskRequest request){
 		TaskResponse updated = service.updateTask(id, request);

@@ -12,6 +12,7 @@ import com.jlss.task_manager.enums.Status;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import org.springframework.data.domain.*;
 
 @Service
 public class TaskServiceImpl implements TaskService   {
@@ -55,17 +56,27 @@ public class TaskServiceImpl implements TaskService   {
  		}
  	}
  	@Override
-	public List<TaskResponse> getAllTasks(){
-		return repository.findAll()
-		 		.stream().map(task -> convertToResponse(task)).collect(Collectors.toList());
+	public Page<TaskResponse> getTasks(Status status, String search, int page, int size, String sortBy, String direction){
+		Sort sort = direction.equalsIgnoreCase("desc")
+		? Sort.by(sortBy).descending()
+		:Sort.by(sortBy).ascending();
+		Pageable pageable = PageRequest.of(page,size,sort);
+		Page<Task> taskPage;
+		if (status != null && search != null) {
+		    taskPage = repository.findByStatusAndTitleContaining(status, search, pageable);
+		}
+		if (status!=null){
+			taskPage = repository.findByStatus(status,pageable);
+		}
+		if (search!=null){
+			taskPage = repository.findByTitleContaining(search, pageable);
+		}
+		else{
+			taskPage = repository.findAll(pageable);
+		}
+		return taskPage.map(this::convertToResponse);
 	}
-	@Override
-	public List<TaskResponse> getTasksByStatus(Status status){
-		return repository.findByStatus(status)
-				.stream()
-                .map(this::convertToResponse)
-                .collect(Collectors.toList());
-	}
+	
 
 	@Override
 	@Transactional
